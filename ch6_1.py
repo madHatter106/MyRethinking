@@ -51,4 +51,10 @@ pm.summary(trc1, alpha=0.11)
 ar.plot_forest(trc1, var_names=['a', 'bl', 'br'],
 combined=True, figsize=(5, 2));
 pl.axvline(color='k', ls=':');
-pm.__version__
+with m1:
+    prior = pm.sample_prior_predictive()
+ppc = pm.sample_posterior_predictive(trc1, samples=500, model=m1)
+ar1 = ar.from_pymc3(trace=trc1, prior=prior,
+                posterior_predictive=ppc)
+ar.plot_pair(trc1, var_names=['a', 'br' ,'bl'],
+             divergences=True, kind='kde');
