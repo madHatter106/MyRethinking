@@ -50,7 +50,7 @@ with pm.Model() as m1:
 pm.summary(trc1, alpha=0.11)
 ar.plot_forest(trc1, var_names=['a', 'bl', 'br'], combined=True, figsize=(5, 2));
 pl.axvline(color='k', ls=':');
-<<<<<<< HEAD
+
 with m1:
     prior = pm.sample_prior_predictive()
 ppc = pm.sample_posterior_predictive(trc1, samples=500, model=m1)
@@ -58,64 +58,3 @@ ar1 = ar.from_pymc3(trace=trc1, prior=prior,
                 posterior_predictive=ppc)
 ar.plot_pair(trc1, var_names=['a', 'br' ,'bl'],
              divergences=True, kind='kde');
-=======
-
-ar.plot_pair(trc1, var_names=['br', 'bl'], );
-
-"""
-2. Multi colinear milk
-"""
-d = pd.read_csv('./rethinking-Experimental/data/milk.csv', delimiter=';')
-# standardize the variables
-d['K'] = scale(d['kcal.per.g'].values)
-d['F'] = scale(d['perc.fat'].values)
-d['L'] = scale(d['perc.lactose'].values)
-
-# Regress on perc.fact
-
-with pm.Model() as m3:
-    σ = pm.Exponential('σ', 1)
-    bF = pm.Normal('bF', 0, 0.5)
-    a = pm.Normal('a', 0, 0.2)
-    mu = a + bF * d.F
-    Ki = pm.Normal('Ki', mu=mu, sd=σ, observed=d.K)
-    trc3 = pm.sample()
-
-with pm.Model() as m4:
-    σ = pm.Exponential('σ', 1)
-    bL = pm.Normal('bL', 0, 0.5)
-    a = pm.Normal('a', 0, 0.2)
-    mu = a + bL * d.L
-    Ki = pm.Normal('Ki', mu=mu, sd=σ, observed=d.K)
-    trc4 = pm.sample()
-
-with pm.Model() as m5:
-    σ = pm.Exponential('σ', 1)
-    bF = pm.Normal('bF', 0, 0.5)
-    bL = pm.Normal('bL', 0, 0.5)
-    a = pm.Normal('a', 0, 0.2)
-    mu = a + bF * d.F + bL * d.L
-    Ki = pm.Normal('Ki', mu=mu, sd=σ, observed=d.K)
-    trc5 = pm.sample(tune=1000)
-
-pm.summary(trc3)
-pm.summary(trc4)
-
-pd.plotting.scatter_matrix(d[['L', 'F', 'K']]);
-
-pm.summary(trc5)
-
-"""
-L and F contain much the same information, and are almost substitute for one another.
-Either can predict K, much neither is of any help once the other is knownself.
-
-What is likely going on: there is core tradeoff in milk composition that mothers must obey.
-Feed often a milk that tends to be watery and low in energy, though high in sugar (L), or
-feed more rarely a richer milk high in fat (F). This implies the following causal model,
-where D is how dense the milk needs to be given the feeding strategy:
-"""
-
-diag_milk = CausalGraphicalModel(nodes=['L', 'F', 'D' ,'K'],
-                                 edges=[('D', 'L'), ('D', 'F'), ('L', 'K'), ('F', 'K')])
-diag_milk.draw()
->>>>>>> 21edfe64520b2152861d96683facc93d3057687c
