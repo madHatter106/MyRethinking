@@ -9,6 +9,8 @@ import arviz as ar
 from sklearn.preprocessing import scale
 import matplotlib.pyplot as pl
 from causalgraphicalmodels import CausalGraphicalModel
+from cmocean.cm import balance_r
+from seaborn import heatmap
 
 """
 Example: infer direct influence of both parents (P) and grand parents (G) on the
@@ -45,18 +47,23 @@ b_PC = 1 # direct effect of P on C
 b_U = 2 # direct effect of U on P and C
 
 np.random.seed(1)
-U = 2 * np.random.binomial(n=n, p=0.5) - 1
+U = np.random.binomial(n=1, p=0.5, size=n)
 G = np.random.normal(size=n)
 P = np.random.normal(loc=b_GP*G + b_U*U)
 C = np.random.normal(b_PC*P + b_GC*G + b_U*U)
-
 d_ = pd.DataFrame(dict(C=C, P=P, G=G, U=U))
-d_.head()
+dcorr = d_.corr()
+dcorr.head()
+_, ax = pl.subplots()
+heatmap(dcorr.iloc[1:, :-1], mask=np.triu(np.ones([dcorr.shape[0]-1]*2), k=1),
+        ax=ax, vmin=-1, vmax=1, cmap=balance_r, annot=True)
+ax.set_facecolor('black')
+
 
 with pm.Model() as m11:
     σ = pm.Exponential('σ', 1)
-    β_PC = pm.Normal('b_PC', 0, 1)
-    β_GC = pm.Normal('b_GC', 0, 1)
+    β_PC = pm.Normal('β_PC', 0, 1)
+    β_GC = pm.Normal('β_GC', 0, 1)
     α = pm.Normal('α', 0, 1)
     μ = α + β_PC * d_.P.values + β_GC * d_.G.values
     C = pm.Normal('C', mu=μ, sd=σ, observed=d_.C.values)
