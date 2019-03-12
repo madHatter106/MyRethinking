@@ -24,12 +24,11 @@ X_train = np.random.multivariate_normal(mean=np.zeros(n_dim), cov=Rho, size=N)
 X_test = np.random.multivariate_normal(mean=np.zeros(n_dim), cov=Rho, size=N)
 y_train = X_train[:, 0]
 mm_train = np.ones((N, 1))
-
+col_names=[]
 if k > 1:
     mm_train = np.c_[mm_train, X_train[:, 1:]]
-    bnames = ["b%d" % i for i in range(1, k)]
-bnames = ["a"] + bnames
-bnames
-mm_train
-
-d = pd.DataFrame(np.c_[y_train, mm_train], columns=)
+    col_names = ["x%d" % i for i in range(1, k)]
+col_names = ["y", "x0"] + col_names
+col_names
+d = pd.DataFrame(np.c_[y_train, mm_train], columns=col_names)
+d.head()
