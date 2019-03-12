@@ -8,6 +8,7 @@ from sklearn.metrics import r2_score
 from sklearn.metrics import mean_absolute_error
 import matplotlib.pyplot as pl
 
+"""Using the hominin brain example:"""
 
 sppnames = ["afarensis", "africanus", "habilis", "boisei", "rudolfensis",
             "ergaster", "sapiens", ]
@@ -65,7 +66,7 @@ with pm.Model() as m3:
 r2_scores.append(compute_r2(trc3, m3, y))
 mae.append(compute_maes(trc3, m3, y))
 
-pwr=4
+pwr = 4
 with pm.Model() as m4:
     σ = pm.Exponential('σ', 1)
     β = pm.Normal('β', 0, 10, shape=pwr)
@@ -76,7 +77,7 @@ with pm.Model() as m4:
 r2_scores.append(compute_r2(trc4, m4, y))
 mae.append(compute_maes(trc4, m4, y))
 
-pwr=5
+pwr = 5
 with pm.Model() as m5:
     σ = pm.Exponential('σ', 1)
     β = pm.Normal('β', 0, 10, shape=pwr)
@@ -87,7 +88,7 @@ with pm.Model() as m5:
 r2_scores.append(compute_r2(trc5, m5, y))
 mae.append(compute_maes(trc5, m5, y))
 
-pwr=6
+pwr = 6
 with pm.Model() as m6:
     β = pm.Normal('β', 0, 10, shape=pwr)
     α = pm.Normal('α', 0.5, 1)
