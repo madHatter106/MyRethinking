@@ -35,3 +35,8 @@ waic = pm.waic(trace, model=model)
 waic
 waic.WAIC - 2 * waic.p_WAIC
 loo = pm.loo(trace, model=model)
+"""Running in-sample/out-sample simulation"""c
+
+from sim_train_test import simulate
+
+n_sims = 10000
