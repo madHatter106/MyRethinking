@@ -66,6 +66,17 @@ def plot_train_test(ax, trn, tst, title=None):
     ax.legend()
     ax.set_title(title, fontsize=12)
 
+res = dict(train=dict(dev=dev_trn, mae=mae_trn, r2=r2_trn),
+           test=dict(dev=dev_tst, mae=mae_tst, r2=r2_tst)
+           )
+
+import pickle
+with open('./ch7_2_sim_results.pkl', 'wb') as fb:
+    pickle.dump(res, fb, protocol=pickle.HIGHEST_PROTOCOL)
+
+#with open('./ch7_2_sim_results.pkl', 'rb') as fb:#
+#   res = pickle.load(fb)
+
 f, ax = pl.subplots(nrows=3, figsize=(6, 12), sharex=True)
 
 plot_train_test(ax[0], dev_trn, dev_tst, title='deviance')
