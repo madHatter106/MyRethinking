@@ -51,10 +51,10 @@ def simulate(N=100, n_params=5):
         r2_train[i] = r2_score(y_train, μ_train)
         mae_train[i] = mae_score(y_train, μ_train)
         deviance_test[i] = -2 * log_lkl_test.sum()
-        r2_test[i] = r2_score(y_test, μ_μ_test)
+        r2_test[i] = r2_score(y_test, μ_test)
         mae_test[i] = mae_score(y_test, μ_test)
 
-        train_dict = dict(r2=r2_train, mae=mae_train, deviance=deviance_train)
-        test_dict = dict(r2=r2_test, mae=mae_test, deviance=deviance_test)
+    train_dict = dict(r2=r2_train, mae=mae_train, deviance=deviance_train)
+    test_dict = dict(r2=r2_test, mae=mae_test, deviance=deviance_test)
 
     return train_dict, test_dict
