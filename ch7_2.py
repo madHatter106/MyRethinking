@@ -40,7 +40,7 @@ log_lik = st.norm.logpdf(d.brain.values,
 
 from sim_train_test import simulate
 
-n_sim = 100
+n_sim = 10000
 n_params = 5
 dev_trn = np.empty((n_sim, n_params))
 mae_trn = np.empty_like(dev_trn)
@@ -82,4 +82,3 @@ f, ax = pl.subplots(nrows=3, figsize=(6, 12), sharex=True)
 plot_train_test(ax[0], dev_trn, dev_tst, title='deviance')
 plot_train_test(ax[1], r2_trn, r2_tst, title='r2')
 plot_train_test(ax[2], mae_trn, mae_tst, title='mae')
-f.tight_layout()
