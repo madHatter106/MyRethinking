@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import scale
 import pymc3 as pm
-
+import arviz as az
 import matplotlib.pyplot as pl
 
 da = pd.read_csv('./rethinking-Experimental/data/rugged.csv', delimiter=';')
@@ -90,3 +90,36 @@ with m2i:
 post_m1i = pm.trace_to_dataframe(trace_m1i, varnames=['α', 'β'])
 post_m1i_μ = link(post_m1i, x)
 post_m1i_μ.shape
+
+pm.summary(trace_m1i)
+pm.summary(trace_m2i)
+
+dfinal.head()
+
+dfinal['cont_africa'] = dfinal.A1.astype('i')
+dfinal.head()
+
+with pm.Model() as m3:
+    α = pm.Normal('α', 0, 0.1, )
+    β = pm.Normal('β', 0, 0.3, )
+    σ = pm.Exponential('σ', 1)
+    μ = α + β * (dfinal.rugged_s.values - rbar)
+    log_gdp_s_i = pm.Normal('log_gdp_s_i', μ, σ, observed=dfinal.log_gdp_s.values)
+
+
+with pm.Model() as m4:
+    α = pm.Normal('α', 0, 0.1, shape=2)
+    β = pm.Normal('β', 0, 0.3, )
+    σ = pm.Exponential('σ', 1)
+    μ = α[dfinal.cont_africa.values] + β * (dfinal.rugged_s.values - rbar)
+    log_gdp_s_i = pm.Normal('log_gdp_s_i', μ, σ, observed=dfinal.log_gdp_s.values)
+
+with m3:
+    trace_m3 = pm.sample()
+with m4:
+    trace_m4 = pm.sample()
+m3.name = 'm3'
+m4.name = 'm4'
+pm.compare({m3: trace_m3, m4: trace_m4})
+
+pm.summary(trace_m4, alpha=0.11)
